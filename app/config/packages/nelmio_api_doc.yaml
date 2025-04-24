@@ -1,0 +1,11 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: AD Management API
+            version: 1.0.0
+            description: LDAP REST API zur Verwaltung von Benutzern und Gruppen
+
+    areas:
+        default:
+            path_patterns:
+                - ^/api
