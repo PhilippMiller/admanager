@@ -21,12 +21,16 @@ class LdapService
     ) {
         $this->baseDn = $baseDn;
 
+        $encryption = $_ENV['LDAP_ENCRYPTION'] ?? (str_starts_with($host, 'ldaps://') ? 'ssl' : 'none');
+        $host = preg_replace('#^ldaps?://#', '', $host);
+
         // Symfony-konforme Verbindung
         $this->ldap = Ldap::create('ext_ldap', [
             'host' => $host,
             'port' => $port,
-            'encryption' => 'none',
+            'encryption' => $encryption,
         ]);
+
         $this->ldap->bind($userDn, $password);
 
         // Zugriff auf den nativen LDAP-Roh-Handle
