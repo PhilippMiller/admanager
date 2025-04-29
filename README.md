@@ -56,16 +56,26 @@ docker compose up -d
 - Symfony will be available at: [http://localhost:8000](http://localhost:8000)
 - Swagger UI will be available at: [http://localhost:8000/api/doc](http://localhost:8000/api/doc)
 
-### 3. Configure `.env.local`
+### 3. Configure `.env.local` and add `.env`
 
-Create a `.env.local` file inside the `app/` directory:
+Create a `.env` and `.env.local` file inside the `app/` directory:
+
+```bash
+touch app/.env
+nano app/.env.local
+```
 
 ```dotenv
 LDAP_HOST=ldaps://domain-constroller.my.domain
 LDAP_PORT=636
+LDAP_ENCRYPTION=ssl     # valid: ssl / none
+LDAP_IGNORE_CERT=0      # valid: 0 / 1
+
 LDAP_BASE_DN=dc=my,dc=domain
 LDAP_USER_DN=DomainUser/Admin@my.domain
 LDAP_PASSWORD=YOUR_PASSWORD
+
+APP_SECRET=YOUR_TOP_SECRET_APP_SECRET
 ```
 
 **Notes:**
@@ -105,7 +115,6 @@ All endpoints are documented in [Swagger UI](http://localhost:8000/api/doc)!
 
 - Secure LDAP login via LDAPS or StartTLS
 - Proper error handling for LDAP operations
-- No sensitive credentials stored in the Git repository
 
 ---
 
