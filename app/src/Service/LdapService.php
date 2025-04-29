@@ -24,6 +24,10 @@ class LdapService
         $encryption = $_ENV['LDAP_ENCRYPTION'] ?? (str_starts_with($host, 'ldaps://') ? 'ssl' : 'none');
         $host = preg_replace('#^ldaps?://#', '', $host);
 
+        if ($_ENV['LDAP_IGNORE_CERT'] == 1) {
+            putenv('LDAPTLS_REQCERT=never');
+        }
+
         // Symfony-konforme Verbindung
         $this->ldap = Ldap::create('ext_ldap', [
             'host' => $host,
