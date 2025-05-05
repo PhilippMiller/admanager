@@ -73,6 +73,28 @@ class LdapService
         }
 
         $entry = $results[0];
+        $lockoutTime = $entry->getAttribute('lockoutTime')[0] ?? null;
+        $uac = $entry->getAttribute('userAccountControl')[0] ?? null;
+        $lastLogonRaw = $entry->getAttribute('lastLogonTimestamp')[0] ?? null;
+
+        // isLocked info
+        $isLocked = isset($lockoutTime) && $lockoutTime !== '0';
+
+        // isDisabled info
+        $isDisabled = false;
+        if ($uac !== null) {
+            $isDisabled = ((int)$uac & 0x2) === 0x2;
+        }
+
+        // lastLogonTimestamp info
+        $lastLogon = null;
+        if ($lastLogonRaw && is_numeric($lastLogonRaw)) {
+            $windowsTimestamp = (int)$lastLogonRaw;
+            // AD-Zeit beginnt am 1.1.1601, Unix am 1.1.1970 → 11644473600 Sekunden Unterschied
+            $lastLogonUnix = (int)($windowsTimestamp / 10000000 - 11644473600);
+            $lastLogon = (new \DateTime())->setTimestamp($lastLogonUnix)->format('Y-m-d H:i:s');
+        }
+
 
         return [
             'dn' => $entry->getDn(),
@@ -85,7 +107,10 @@ class LdapService
                     return $matches[1];
                 }
                 return $dn; // fallback
-            }, $entry->getAttribute('memberOf') ?? [])
+            }, $entry->getAttribute('memberOf') ?? []),
+            'isLocked' => $isLocked,
+            'isDisabled' => $isDisabled,
+            'lastLogon' => $lastLogon
         ];
     }
 
