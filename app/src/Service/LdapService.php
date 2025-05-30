@@ -110,7 +110,9 @@ class LdapService
             }, $entry->getAttribute('memberOf') ?? []),
             'isLocked' => $isLocked,
             'isDisabled' => $isDisabled,
-            'lastLogon' => $lastLogon
+            'lastLogon' => $lastLogon,
+            'title' => $entry->getAttribute('title')[0] ?? null,
+            'department' => $entry->getAttribute('department')[0] ?? null
         ];
     }
 
