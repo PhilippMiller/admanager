@@ -112,7 +112,8 @@ class LdapService
             'isDisabled' => $isDisabled,
             'lastLogon' => $lastLogon,
             'position' => $entry->getAttribute('title')[0] ?? null,
-            'department' => $entry->getAttribute('department')[0] ?? null
+            'department' => $entry->getAttribute('department')[0] ?? null,
+            'description' => $entry->getAttribute('description')[0] ?? null
         ];
     }
 
